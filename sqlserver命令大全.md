@@ -9,9 +9,9 @@ on  primary     -- 默认就属于primary文件组,可省略
 /*--数据文件的具体描述--*/
     name='stuDB_data',              -- 主数据文件的逻辑名称
     filename='D:\stuDB_data.mdf',   -- 主数据文件的物理名称
-    size=5mb,                       --主数据文件的初始大小
+    size=5mb,                       -- 主数据文件的初始大小
     maxsize=100mb,                  -- 主数据文件增长的最大值
-    filegrowth=15%                  --主数据文件的增长率
+    filegrowth=15%                  -- 主数据文件的增长率
 )
 log on
 (
@@ -31,6 +31,7 @@ drop database stuDB
 
 <br/><br/>
 >## 表的创建、修改、删除
+
 ### 创建表
 
 ```sql
@@ -64,33 +65,78 @@ create table stuMarks
     --若不指定contraint的约束名，则会随机生成一个约束名
 ```
 
+数据类型：
+| 数据类型      | 说明                                   |
+|---------------|----------------------------------------|
+| int           | 四字节整数类型                         |
+| smallint      | 双字节整数类型                         |
+| tinyint       | 无符号单字节整数类型                   |
+| bit           | 二进制位类型                           |
+| decimal       | 数值类型（固定精度和小数位）           |
+| numeric       | 同decimal                              |
+| float         | 双精度浮点数类型                       |
+| real          | 浮点数类型                             |
+| money         | 货币类型（精确到货币单位的千分之十）   |
+| smallmoney    | 短货币类型（精确到货币单位的千分之十） |
+| datetime      | 日期时间类型                           |
+| smalldatetime | 短日期时间类型                         |
+| char(n)       | 字符（串）类型                         |
+| varchar(n)    | 可变长度字符（串）类型                 |
+| text          | 文本类型                               |
+| binary        | 二进制类型                             |
+| varbinary     | 可变长二进制类型                       |
+| image         | 图像类型                               |
+
+<br/>
+
 ### 修改表
+
 - 修改表名：`EXEC sp_rename <原表名>, <新表名>`
 - 复制表
-    - 复制整张表：`select * into <新表名> from <旧表名>`
-    - 复制表结构：`select * into <新表名> from <旧表名> where 1=2`　　　/* --where 1=2 永远为假，所以什么都不选择，只复制了表结构-- */
-    - 复制表内容：`insert into <新表名> select * from <旧表名>`
+  - 复制整张表：`select * into <新表名> from <旧表名>`
+  - 复制表结构：`select * into <新表名> from <旧表名> where 1=2`　　　/* --where 1=2 永远为假，所以什么都不选择，只复制了表结构-- */
+  - 复制表内容：`insert into <新表名> select * from <旧表名>`
 - 列操作
-    - 增加字段：`alter table <表名> add <属性名> <属性类型> <列级约束条件>`
-    - 修改字段名：`exec sp_rename '表名.[字段原名]','字段新名','column'`
-    - 修改字段属性：`alter table <表名> alter column <字段名> <属性类型> <列级约束条件>`
-    - 删除字段：`alter table <表名> drop column <字段名>`
+  - 增加字段：`alter table <表名> add <属性名> <属性类型> <列级约束条件>`
+  - 修改字段名：`exec sp_rename '表名.[字段原名]','字段新名','column'`
+  - 修改字段属性：`alter table <表名> alter column <字段名> <属性类型> <列级约束条件>`
+  - 删除字段：`alter table <表名> drop column <字段名>`
 - 约束操作
-    - 添加字段约束：`alter table <表名> add [constraint 约束名] primary key(字段名)`
-    - 删除字段约束：`alter table <表名> drop [constraint] <约束名>`
-    - 查询字段约束：`select * from information_schema.constraint_column_usage where TABLE_NAME = '表名'`
-    - 查看字段缺省约束表达式：`select * from information_schema.columns where TABLE_NAME = '表名'`
+  - 添加字段约束：`alter table <表名> add [constraint 约束名] primary key(字段名)`
+  - 删除字段约束：`alter table <表名> drop [constraint] <约束名>`
+  - 查询字段约束：`select * from information_schema.constraint_column_usage where TABLE_NAME = '表名'`
+  - 查看字段缺省约束表达式：`select * from information_schema.columns where TABLE_NAME = '表名'`
 
 ### 删除表
+
 - 删除整表：`drop table <表名>`
 
-
 <br/><br/>
+
 >## 数据的插入、修改、删除
+
 - 数据插入：`insert into <表名>(field1,field2) values(value1,value2)`
 - 数据修改：`update <表名> set 字段名=value [where条件]`
 - 删除表数据
-    - `delete from <表名> [where条件]`　　　/* --删除表中的一条或多条数据，也可以删除全部数据--*/
-    - `truncate table <表名>`　　　/* --删除表中的全部数据--*/
-    - delete删除表数据后，标识字段不能复用。也就是说如果你把id=10（假如id是标识字段）的那行数据删除了，你也不可能再插入一条数据让id=10
-    - truncate删除表数据后，标识重新恢复初始状态。默认为初始值为1，也就是说，truncate之后，再插入一条数据，id=1
+  - `delete from <表名> [where条件]`　　　/* --删除表中的一条或多条数据，也可以删除全部数据--*/
+  - `truncate table <表名>`　　　/* --删除表中的全部数据--*/
+  - delete删除表数据后，标识字段不能复用。也就是说如果你把id=10（假如id是标识字段）的那行数据删除了，你也不可能再插入一条数据让id=10
+  - truncate删除表数据后，标识重新恢复初始状态。默认为初始值为1，也就是说，truncate之后，再插入一条数据，id=1
+
+<br/><br/>
+
+>## 数据查询
+
+```sql
+select〈目标列组〉
+    from 〈数据源〉
+    [where〈元组选择条件〉]
+    [group by 〈分列组〉[having 〈组选择条件〉]]
+    [order by 〈排序列〉〈asc/desc〉]
+```
+
+- distinct语句
+  - `select distinct <列名> from <表名>`
+  - 关键词distinct用于返回唯一不同的值。
+- top子句
+  - `select top <value> [percent] <列名> from <表名>`
