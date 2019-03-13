@@ -131,13 +131,13 @@ select〈目标列组〉
   -- 3.全外连接(full outer join)显示左右两量表所有数据，两表匹配不上的显示为NULL
   select <表头> from 表A full [outer] join 表B on A.键=B.键 [where条件]
   ```
--union
+- union
   - UNION 操作符用于合并两个或多个 SELECT 语句的结果集
   - UNION 内部的 SELECT 语句必须拥有相同数量的列，列也必须拥有相似的数据类型
   - UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
   - 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL
-  ```sql
-  select 职工号 from 职工表
-  union [all]
-  select 职工号 from 仓库表
-  ```
+    ```sql
+    select 职工号 from 职工表
+    union [all]
+    select 职工号 from 仓库表
+    ```
