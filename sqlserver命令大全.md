@@ -65,28 +65,6 @@ create table stuMarks
     --若不指定contraint的约束名，则会随机生成一个约束名
 ```
 
-数据类型：
-| 数据类型      | 说明                                   |
-|---------------|----------------------------------------|
-| int           | 四字节整数类型                         |
-| smallint      | 双字节整数类型                         |
-| tinyint       | 无符号单字节整数类型                   |
-| bit           | 二进制位类型                           |
-| decimal       | 数值类型（固定精度和小数位）           |
-| numeric       | 同decimal                              |
-| float         | 双精度浮点数类型                       |
-| real          | 浮点数类型                             |
-| money         | 货币类型（精确到货币单位的千分之十）   |
-| smallmoney    | 短货币类型（精确到货币单位的千分之十） |
-| datetime      | 日期时间类型                           |
-| smalldatetime | 短日期时间类型                         |
-| char(n)       | 字符（串）类型                         |
-| varchar(n)    | 可变长度字符（串）类型                 |
-| text          | 文本类型                               |
-| binary        | 二进制类型                             |
-| varbinary     | 可变长二进制类型                       |
-| image         | 图像类型                               |
-
 <br/>
 
 ### 修改表
