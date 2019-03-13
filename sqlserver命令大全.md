@@ -113,8 +113,31 @@ select〈目标列组〉
     [order by 〈排序列〉〈asc/desc〉]
 ```
 
-- distinct语句
+- distinct
   - `select distinct <列名> from <表名>`
   - 关键词distinct用于返回唯一不同的值。
-- top子句
+- top
   - `select top <value> [percent] <列名> from <表名>`
+- join
+  ```sql
+  -- 1.内连接(inner join)显示左右两表能完全匹配的数据
+  select <表头> from 表A(B) inner join 表B(A) on A.键=B.键 [where条件]
+  -- example:
+  select z.职工号, z.仓库号, c.地址 from 职工表 z inner join 仓库表 c on z.仓库号=c.仓库号
+  
+  -- 2.左/右外连接(left/right outer join)显示左/右表所有数据，右/左表匹配不上的显示为NULL
+  select <表头> from 表A left [outer] join 表B on A.键=B.键 [where条件]     --outer可省略
+  
+  -- 3.全外连接(full outer join)显示左右两量表所有数据，两表匹配不上的显示为NULL
+  select <表头> from 表A full [outer] join 表B on A.键=B.键 [where条件]
+  ```
+-union
+  - UNION 操作符用于合并两个或多个 SELECT 语句的结果集
+  - UNION 内部的 SELECT 语句必须拥有相同数量的列，列也必须拥有相似的数据类型
+  - UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
+  - 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL
+  ```sql
+  select 职工号 from 职工表
+  union [all]
+  select 职工号 from 仓库表
+  ```
