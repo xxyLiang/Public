@@ -64,6 +64,8 @@ create table stuMarks
     列级表级：[constraint 约束名] check(<约束表达条件式>)
     --若不指定contraint的约束名，则会随机生成一个约束名
 ```
+数据类型：  
+![数据类型](./图片/sql数据类型.jpg)
 
 <br/>
 
@@ -93,7 +95,7 @@ create table stuMarks
 
 >## 数据的插入、修改、删除
 
-- 数据插入：`insert into <表名>(field1,field2) values(value1,value2)`
+- 数据插入：`insert into <表名>(field1,field2) values(value1,value2),(),()....`
 - 数据修改：`update <表名> set 字段名=value [where条件]`
 - 删除表数据
   - `delete from <表名> [where条件]`　　　/* --删除表中的一条或多条数据，也可以删除全部数据--*/
@@ -112,32 +114,61 @@ select〈目标列组〉
     [group by 〈分列组〉[having 〈组选择条件〉]]
     [order by 〈排序列〉〈asc/desc〉]
 ```
-
-- distinct
-  - `select distinct <列名> from <表名>`
-  - 关键词distinct用于返回唯一不同的值。
-- top
-  - `select top <value> [percent] <列名> from <表名>`
-- join
-  ```sql
-  -- 1.内连接(inner join)显示左右两表能完全匹配的数据
-  select <表头> from 表A(B) inner join 表B(A) on A.键=B.键 [where条件]
-  -- example:
-  select z.职工号, z.仓库号, c.地址 from 职工表 z inner join 仓库表 c on z.仓库号=c.仓库号
-  
-  -- 2.左/右外连接(left/right outer join)显示左/右表所有数据，右/左表匹配不上的显示为NULL
-  select <表头> from 表A left [outer] join 表B on A.键=B.键 [where条件]     --outer可省略
-  
-  -- 3.全外连接(full outer join)显示左右两量表所有数据，两表匹配不上的显示为NULL
-  select <表头> from 表A full [outer] join 表B on A.键=B.键 [where条件]
-  ```
-- union
-  - UNION 操作符用于合并两个或多个 SELECT 语句的结果集
-  - UNION 内部的 SELECT 语句必须拥有相同数量的列，列也必须拥有相似的数据类型
-  - UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
-  - 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL
+- 选择列
+  - distinct
+    - `select distinct <列名> from <表名>`
+    - 关键词distinct用于返回唯一不同的值。
+  - top
+    - `select top <value> [percent] <列名> from <表名>`
+  - join
     ```sql
-    select 职工号 from 职工表
-    union [all]
-    select 职工号 from 仓库表
+    -- 1.内连接(inner join)显示左右两表能完全匹配的数据
+    select <表头> from 表A(B) inner join 表B(A) on A.键=B.键 [where条件]
+    -- example:
+    select z.职工号, z.仓库号, c.地址 from 职工表 z inner join 仓库表 c on z.仓库号=c.仓库号
+    
+    -- 2.左/右外连接(left/right outer join)显示左/右表所有数据，右/左表匹配不上的显示为NULL
+    select <表头> from 表A left [outer] join 表B on A.键=B.键 [where条件]     --outer可省略
+    
+    -- 3.全外连接(full outer join)显示左右两量表所有数据，两表匹配不上的显示为NULL
+    select <表头> from 表A full [outer] join 表B on A.键=B.键 [where条件]
     ```
+  - case
+    - 替换查询结果中的数据，可用于将定量资料转变为等级资料或定性资料。
+    ```sql
+    select 职工号,工资等级=
+  	case
+        (when 条件 then 表达式)
+  	    when 工资<1500 then 'low'
+  	    when 工资>=1500 and 工资<2500 then 'middle'
+  	    when 工资>=2500 then 'high'
+  	end
+    from 职工表
+    ```
+  - 聚合函数  
+      ![聚合函数表](./图片/聚合函数表.jpg)
+  - union
+    - UNION 操作符用于合并两个或多个 SELECT 语句的结果集
+    - UNION 内部的 SELECT 语句必须拥有相同数量的列，列也必须拥有相似的数据类型
+    - UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
+    - 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL
+      ```sql
+      select 职工号 from 职工表
+      union [all]
+      select 职工号 from 仓库表
+      ```
+
+- where子句
+  - like / not like （模糊查询）
+    - % 包含零个或更多字符的任意字符串。
+    - _（下划线） 任何单个字符。
+    - \[ ] 指定范围（例如 [a-f]）或集合（例如 [abcdef]）内的任何单个字符。
+    - [^] 不在指定范围（例如[^a-f]）或集合（例如[^abcdef]）内的任何单个字符
+  - between in （范围比较）
+    - `expression [NOT] BETWEEN expression1 AND expression2`
+    - `WHERE 出生时间 NOT BETWEEN '1989-1-1' and '1989-12-31’`
+  
+
+<br/><br/>
+
+>## 视图
