@@ -1,0 +1,198 @@
+>## 数据库的创建、删除
+### 创建数据库
+
+```sql
+/* --创建数据库-- */
+create database stuDB 
+on  primary     -- 默认就属于primary文件组,可省略
+(
+/*--数据文件的具体描述--*/
+    name='stuDB_data',              -- 主数据文件的逻辑名称
+    filename='D:\stuDB_data.mdf',   -- 主数据文件的物理名称
+    size=5mb,                       -- 主数据文件的初始大小
+    maxsize=100mb,                  -- 主数据文件增长的最大值
+    filegrowth=15%                  -- 主数据文件的增长率
+)
+log on
+(
+/*--日志文件的具体描述,各参数含义同上--*/
+    name='stuDB_log',
+    filename='D:\stuDB_log.ldf',
+    size=2mb,
+    filegrowth=1mb
+)
+
+/* --使用数据库-- */ 
+use database stuDB
+
+/* --删除数据库-- */ 
+drop database stuDB
+```
+
+<br/><br/>
+
+>## 表的创建、修改、删除
+
+### 创建表
+
+```sql
+CREATE TABLE 〈表名〉(
+　　列名 数据类型 {列级完整性约束条件},
+　　列名 数据类型 {列级完整性约束条件},
+    ......
+    {表级完整性约束条件}
+)
+
+--example:
+create table stuMarks
+(
+    ExamNo      int     identity(1,1) primary key,
+    stuNo       char(6) not null,
+    writtenExam int     not null,
+    LabExam     int     not null
+)
+
+
+完整性约束条件(数据完整性):
+1. not null / null
+2. default : 设置默认值，格式: default 约束名 value
+3. primary key : 定义主码，保证惟一性和非空性
+    列级： 列后 primary key
+    表级： 最后 primary key({列名}, {列名}, ...)
+4. unique :不允许列中出现重复的属性值，格式同3
+5. foreign key :定义参照完整性 
+    列级： 列后 references 参照表(列名)
+    表级： 最后 foreign key 列名 references 参照表(列名)
+6. check : 检查约束
+    列级表级： check({约束表达条件式})
+    --所有约束前可加[constraint 约束名]，若不指定contraint的约束名，则会随机生成一个约束名
+```
+### 系统数据类型：  [http://www.w3school.com.cn/sql/sql_datatypes.asp]
+
+<br/>
+
+### 修改表
+
+- 修改表名：`EXEC sp_rename {原表名}, {新表名}`
+- 复制表
+  - 复制整张表：`select * into {新表名} from {旧表名}`
+  - 复制表结构：`select * into {新表名} from {旧表名} where 1=2`　　　/* --where 1=2 永远为假，所以什么都不选择，只复制了表结构-- */
+  - 复制表内容：`insert into {新表名} select * from {旧表名}`
+- 列操作
+  - 增加字段：`alter table {表名} add {属性名} {属性类型} {列级约束条件}`
+  - 修改字段名：`exec sp_rename '表名.[字段原名]','字段新名','column'`
+  - 修改字段属性：`alter table {表名} alter column {字段名} {属性类型} {列级约束条件}`
+  - 删除字段：`alter table {表名} drop column {字段名}`
+- 约束操作
+  - 添加字段约束：`alter table {表名} add [constraint 约束名]` + 表级约束条件 
+  ```sql
+  alter table {表名} add [constraint 约束名] primary key(字段名)
+  alter table {表名} add [constraint 约束名] unique(字段名)
+  alter table {表名} add [constraint 约束名] foreign key (列名) references 参照表(列名)
+  alter table {表名} add [constraint 约束名] check(约束表达条件式)
+  ```
+  - 删除字段约束：`alter table {表名} drop [constraint] {约束名}`
+  - 查询字段约束：`select * from information_schema.constraint_column_usage where TABLE_NAME = '表名'`
+  - 查看字段缺省约束表达式：`select * from information_schema.columns where TABLE_NAME = '表名'`
+
+### 删除表
+
+- 删除整表：`drop table {表名}`
+
+<br/><br/>
+
+>## 数据的插入、修改、删除
+
+- 数据插入：`insert into {表名}(field1,field2) values(value1,value2),(),()....`
+- 数据修改：`update {表名} set 字段名=value [where条件]`
+- 删除表数据
+  - `delete from {表名} [where条件]`　　　/* --删除表中的一条或多条数据，也可以删除全部数据--*/
+  - `truncate table {表名}`　　　/* --删除表中的全部数据--*/
+  - delete删除表数据后，标识字段不能复用。也就是说如果你把id=10（假如id是标识字段）的那行数据删除了，你也不可能再插入一条数据让id=10
+  - truncate删除表数据后，标识重新恢复初始状态。默认为初始值为1，也就是说，truncate之后，再插入一条数据，id=1
+
+<br/><br/>
+
+>## 数据查询
+
+```sql
+select〈目标列组〉
+    from 〈数据源〉
+    [where〈元组选择条件〉]
+    [group by 〈分列组〉[having 〈组选择条件〉]]
+    [order by 〈排序列〉〈asc/desc〉]
+```
+- 选择列
+  - distinct：用于返回唯一不同的值
+    - `select distinct {列名} from {表名}`
+  - top：用于返回表前n项或前百分之n的行
+    - `select top {value} [percent] {列名} from {表名}`
+  - join
+    ```sql
+    -- 1.内连接(inner join)显示左右两表能完全匹配的数据
+    select {表头} from 表A(B) inner join 表B(A) on A.键=B.键 [where条件]
+    -- example:
+    select z.职工号, z.仓库号, c.地址 from 职工表 z inner join 仓库表 c on z.仓库号=c.仓库号
+    
+    -- 2.左/右外连接(left/right outer join)显示左/右表所有数据，右/左表匹配不上的显示为NULL
+    select {表头} from 表A left [outer] join 表B on A.键=B.键 [where条件]     --outer可省略
+    
+    -- 3.全外连接(full outer join)显示左右两量表所有数据，两表匹配不上的显示为NULL
+    select {表头} from 表A full [outer] join 表B on A.键=B.键 [where条件]
+    ```
+  - case：替换查询结果中的数据，可用于将定量资料转变为等级资料或定性资料
+    ```sql
+    select 职工号,工资等级=
+  	case
+        (when 条件 then 表达式)
+  	    when 工资{1500 then 'low'
+  	    when 工资}=1500 and 工资{2500 then 'middle'
+  	    when 工资}=2500 then 'high'
+  	end
+    from 职工表
+    ```
+  - 聚合函数  
+    - [https://docs.microsoft.com/zh-cn/sql/t-sql/functions/aggregate-functions-transact-sql?view=sql-server-2017]
+  - union
+    - UNION 操作符用于合并两个或多个 SELECT 语句的结果集
+    - UNION 内部的 SELECT 语句必须拥有相同数量的列，列也必须拥有相似的数据类型
+    - UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
+    - 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL
+      ```sql
+      select 职工号 from 职工表
+      union [all]
+      select 职工号 from 仓库表
+      ```
+
+- where子句
+  - like / not like （模糊查询）
+    - % 包含零个或更多字符的任意字符串。
+    - _（下划线） 任何单个字符。
+    - \[ \] 指定范围（例如 [a-f]）或集合（例如 [abcdef]）内的任何单个字符。
+    - [^] 不在指定范围（例如[^a-f]）或集合（例如[^abcdef]）内的任何单个字符
+  - between in （范围比较）
+    - `expression [NOT] BETWEEN expression1 AND expression2`
+    - `WHERE 出生时间 NOT BETWEEN '1989-1-1' and '1989-12-31’`
+  
+<br/><br/>
+
+>## 自定义数据类型
+
+- 一般数据类型定义：`CREATE TYPE {typename} FROM {base_type} [NULL / NOT NULL]`
+- 表数据类型定义：`CREATE TYPE {typename} AS TABLE({列定义内容})`
+- 删除：`DROP TYPE {typename}`
+
+<br/><br/>
+
+>## 变量
+- 变量分类
+  - 全局变量：由系统提供且预先声明，通过在名称前加两个“@”来区别于局部变量
+  - 局部变量：用于保存单个数据值。
+    - 当首字母为“@”时，表示该标识符为局部变量名；
+    - 当首字母为“#”时，此标识符为一临时数据库对象名，若开头含一个“#”，表示局部临时数据库对象名；若开头含两个“#”，表示全局临时数据库对象名。
+- 局部变量的使用
+  - 定义：`DECLARE @variable_name type[=value], ...`
+  - 赋值：`SET/SELECT @variable=expression`
+  - 局部变量的寿命很短，查询结束后或使用`GO`后自动删除
+- 局部游标变量
+  - 定义：`DECLARE @cursor_variable_name CURSOR, ...`
