@@ -9,9 +9,15 @@ var server = http.createServer();
 server.on('request', function(request, response){
     console.log('收到客户的请求了，请求路径是：' + request.url);
 
+    // 设置header，html格式文本，编码为utf-8
+    response.setHeader('Content-Type', 'text/html; charset=utf-8')
+
     response.write('hello ');
     response.write('world');
     response.end();
+
+    // 或者：
+    // response.end('hello world');
 })
 
 // 4.绑定端口号，启动服务

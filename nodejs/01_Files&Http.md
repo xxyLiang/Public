@@ -23,7 +23,7 @@ fs.readFile('./data/a.txt',function(error, data){
         console.log('文件读取失败');
    }
     else{
-         console.log(data.toString());
+         console.log(data.toString()); // data默认是二进制
     }
 })
 ```
@@ -59,7 +59,11 @@ fs.writeFile('./data/a.txt', '我是文件写入的信息', function(error, data
 - 反馈（发送响应）
  
 &emsp;&emsp;当客户端请求过来，就会自动触发服务器的request请求事件，然后执行第二个参数：回调处理函数。
+
 &emsp;&emsp;response对象有一个方法：write 可以用来给客户端发送响应数据。write 可以使用多次，但是最后一定要使用end来结束响应，否则客户端会一直等待
+
+&emsp;&emsp;响应的数据只能是二进制数据或者字符串
+- `JSON.stringify()`
 
 ```js
 // 1.加载http核心模块
@@ -76,6 +80,8 @@ server.on('request', function(request, response){
     response.write('hello ');
     response.write('world');
     response.end();
+    // 或者直接：
+    response.end('hello world');
 })
 
 // 4.绑定端口号，启动服务
