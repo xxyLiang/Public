@@ -24,3 +24,14 @@ server.on('request', function(request, response){
 server.listen(3000, function(){
     console.log('通过 http://127.0.0.1:3000/ 来访问');
 })
+
+
+// 合并版本
+var http = require('http');
+http
+    .createServer(function(req, res){
+        res.end('');
+    })
+    .listen(3000, function(){
+        console.log('');
+    })

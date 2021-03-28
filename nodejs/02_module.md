@@ -39,7 +39,7 @@
 语法：
 
 ```js
-    var 自定义变量名 = require('模块')
+var 自定义变量名 = require('模块')
 ```
 作用：
 - 执行被加载模块中的代码
@@ -112,7 +112,7 @@ module.exports 或者 modeule.exports = {};
 <br/>
 
 >## 总结
-
+Apache目录的制作：
 ```javascript
 // 引用服务
 var http = require('http');
@@ -122,7 +122,7 @@ var template = require('art-template');
 // 创建服务
 var server = http.createServer();
 // 公共路径
-var wwwDir = 'D:/app/www';
+var wwwDir = 'D:/';
 server.on('request', function (req, res) {
     var url = req.url;
     // 读取文件
@@ -137,8 +137,8 @@ server.on('request', function (req, res) {
             // 使用模板引擎解析替换data中的模板字符串
             // 去xmpTempleteList.html中编写模板语法
             var htmlStr = template.render(data.toString(), { 
-                title: 'D:/app/www/ 的索引',
-                files:files 
+                title: 'D:/ 的索引',
+                files: files 
             });
             // 发送响应数据
             res.end(htmlStr);
@@ -252,4 +252,3 @@ fs.readFile('./index.txt',function(err,data){
 // 这里省略了.也是磁盘根目录
 require('./index')('hello')
 ```
-
