@@ -14,11 +14,11 @@
 var fs = require('fs');
 
 // 2.读取文件
-fs.readFile('./data/a.txt',function(error, data){
-    // 成功：   error: null
-    //          data: 数据
-    // 失败:    error: 错误对象
-    //          data: undefined
+fs.readFile('./data/a.txt', 'utf8', function(error, data){
+    // data默认是二进制，使用data.toString()可转换。
+    // 第二个参数可选，将读取的数据转换为utf8
+    // 成功：error: null; data: 数据
+    // 失败: error: 错误对象; data: undefined
    if(error){
         console.log('文件读取失败');
    }

@@ -1,4 +1,4 @@
-## 为什么要学习Node.js
+>## 为什么要学习Node.js
 
 - 企业需求
   - 具有服务端开发经验更改
@@ -10,9 +10,9 @@
     - 前端
     - 运维部署
   - 多人社区
+<br/>
 
-
-## Node.js是什么
+>## Node.js是什么
 
 - Node.js是JavaScript 运行时
   - 通俗易懂的讲，Node.js是JavaScript的运行平台
@@ -48,8 +48,9 @@
   - npm 是世界上最大的开源生态系统
   - 绝大多数JavaScript相关的包都存放在npm上，这样做的目的是为了让开发人员更方便的去下载使用
   - npm install jquery
+<br/>
 
-## Node能做什么
+>## Node能做什么
 
 - web服务器后台
 - 命令行工具
@@ -62,10 +63,9 @@
   - webpack
   - gulp
   - npm
+<br/>
 
-# 起步
-
-## 安装Node环境
+>## 安装Node环境
 
 - 查看Node环境的版本号
 - 下载：https://nodejs.org/en/
@@ -76,8 +76,9 @@
   - 查看node的版本号：`node --version`
   - 或者`node -v`
 - 配置环境变量
+<br/>
 
-## 解析执行JavaScript
+>## 解析执行JavaScript
 
 1. 创建编写JavaScript脚本文件
 2. 打开终端，定位脚本文件的所属目录
@@ -85,3 +86,20 @@
 
 注意：文件名不要用`node.js`来命名，也就是说除了`node`这个名字随便起，最好不要使用中文。
 
+### nodemon
+
+可以使用一个第三方命令行工具：`nodemon`来帮助我们解决频繁修改代码重启服务器问题。
+
+`nodemon`是一个基于Node.js开发的第三方命令行工具，我们使用的时候需要独立安装：
+```shell
+npm install --global nodemon
+```
+
+安装完毕后，使用：
+```shell
+# 使用 nodemon
+nodemon app.js
+
+# 不使用 nodemon
+node app.js
+```

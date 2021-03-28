@@ -1,4 +1,4 @@
->## Node中的模块系统
+## Node中的模块系统
 
 使用Node编写应用程序主要就是在使用：
 
@@ -25,7 +25,7 @@
 - 通信规则
   - 加载require
   - 导出exports
-&nbsp;
+
 #### CommonJS模块规范
 
 在Node中的JavaScript还有一个重要的概念，模块系统。
@@ -33,6 +33,7 @@
 - 模块作用域
 - 使用require方法来加载模块
 - 使用exports接口对象来导出模板中的成员
+<br/>
 
 #### 加载require
 
@@ -85,6 +86,7 @@ module.exports = {
     }
 };
 ```
+<br/>
 
 #### 模块原理
 
@@ -150,26 +152,11 @@ server.listen(3000, function () {
 })
 ```
 
-```javascript
-1.jQuery中的each 和 原生JavaScript方法forEach的区别：
-	提供源头：
-    	原生js是es5提供的（不兼容IE8）,
-        jQuery的each是jQuery第三方库提供的（如果要使用需要用2以下的版本也就是1.版本）,它的each方法主要用来遍历jQuery实例对象（伪数组）,同时也可以做低版本forEach的替代品,jQuery的实例对象不能使用forEach方法，如果想要使用必须转为数组（[].slice.call(jQuery实例对象)）才能使用
-2.模块中导出多个成员和导出单个成员
-3.301和302的区别：
-	301永久重定向,浏览器会记住
-    302临时重定向
-4.exports和module.exports的区别:
-	每个模块中都有一个module对象
-    module对象中有一个exports对象
-    我们可以把需要导出的成员都挂载到module.exports接口对象中
-	也就是`module.exports.xxx = xxx`的方式
-    但是每次写太多了就很麻烦，所以Node为了简化代码，就在每一个模块中都提供了一个成员叫`exports`
-    `exports === module.exports`结果为true,所以完全可以`exports.xxx = xxx`
-    当一个模块需要导出单个成员的时候必须使用`module.exports = xxx`的方式，=,使用`exports = xxx`不管用,因为每个模块最终return的是module.exports,而exports只是module.exports的一个引用,所以`exports`即使重新赋值,也不会影响`module.exports`。
-    有一种赋值方式比较特殊：`exports = module.exports`这个用来新建立引用关系的。
-    
-```
+jQuery中的`each`和原生JavaScript方法`forEach`的区别：
+- 提供源头：
+  - 原生js是es5提供的（不兼容IE8）
+  - jQuery的`each`是jQuery第三方库提供的（如果要使用需要用2以下的版本也就是1.版本），它的`each`方法主要用来遍历jQuery实例对象（伪数组），同时也可以做低版本`forEach`的替代品，jQuery的实例对象不能使用`forEach`方法，如果想要使用必须转为数组（`[].slice.call`(jQuery实例对象)）才能使用
+
 <br/>
 
 >## require的加载规则
@@ -177,6 +164,10 @@ server.listen(3000, function () {
 - 判断模块标识符
   - 核心模块
   - 自己写的模块（路径形式的模块）
+    - ./  当前目录 不可省略
+    - ../  上一级目录  不可省略
+    -  /xxx也就是D:/xxx
+    - 带有绝对路径几乎不用（D:/a/foo.js）
   - 第三方模块（node_modules）
     - 第三方模块的标识就是第三方模块的名称（不可能有第三方模块和核心模块的名字一致）
     - npm
@@ -187,68 +178,3 @@ server.listen(3000, function () {
       - 如果package.json或者main不成立，则查找被选择项：index.js
       - 如果以上条件都不满足，则继续进入上一级目录中的node_modules按照上面的规则依次查找，直到当前文件所属此盘根目录都找不到最后报错
 
-```javascript
-// 如果非路径形式的标识
-// 路径形式的标识：
-    // ./  当前目录 不可省略
-    // ../  上一级目录  不可省略
-    //  /xxx也就是D:/xxx
-    // 带有绝对路径几乎不用（D:/a/foo.js）
-// 首位表示的是当前文件模块所属磁盘根目录
-// require('./a'); 
-
-
-// 核心模块
-// 核心模块本质也是文件，核心模块文件已经被编译到了二进制文件中了，我们只需要按照名字来加载就可以了
-require('fs'); 
-
-// 第三方模块
-// 凡是第三方模块都必须通过npm下载（npm i node_modules），使用的时候就可以通过require('包名')来加载才可以使用
-// 第三方包的名字不可能和核心模块的名字是一样的
-// 既不是核心模块，也不是路径形式的模块
-//      先找到当前文所述目录的node_modules
-//      然后找node_modules/art-template目录
-//      node_modules/art-template/package.json
-//      node_modules/art-template/package.json中的main属性
-//      main属性记录了art-template的入口模块
-//      然后加载使用这个第三方包
-//      实际上最终加载的还是文件
-
-//      如果package.json不存在或者mian指定的入口模块不存在
-//      则node会自动找该目录下的index.js
-//      也就是说index.js是一个备选项，如果main没有指定，则加载index.js文件
-//      
-        // 如果条件都不满足则会进入上一级目录进行查找
-// 注意：一个项目只有一个node_modules，放在项目根目录中，子目录可以直接调用根目录的文件
-var template = require('art-template');
-
-```
-
-### 模块标识符中的`/`和文件操作路径中的`/`
-
-文件操作路径：
-
-```javascript
-// 咱们所使用的所有文件操作的API都是异步的
-// 就像ajax请求一样
-// 读取文件
-// 文件操作中 ./ 相当于当前模块所处磁盘根目录
-// ./index.txt    相对于当前目录
-// /index.txt    相对于当前目录
-// /index.txt   绝对路径,当前文件模块所处根目录
-// d:express/index.txt   绝对路径
-fs.readFile('./index.txt',function(err,data){
-    if(err){
-       return  console.log('读取失败');
-    }
-    console.log(data.toString());
-})
-```
-
-模块操作路径：
-
-```javascript
-// 在模块加载中，相对路径中的./不能省略
-// 这里省略了.也是磁盘根目录
-require('./index')('hello')
-```
