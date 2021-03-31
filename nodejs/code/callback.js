@@ -9,7 +9,7 @@ function add(x, y, callback) {
     }, 1000)
 }
 
-fn(10, 20, function (data) {
+add(10, 20, function (data) {
     console.log(data);
 })
 
