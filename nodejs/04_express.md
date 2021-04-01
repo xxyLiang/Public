@@ -79,7 +79,7 @@ app.use('/static/',express.static('./public/'));
 
 - [art-template官方文档](https://aui.github.io/art-template/)
 - 在node中，有很多第三方模板引擎都可以使用，不是只有`art-template`
-  - 还有ejs，jade（pug），handlebars，nunjucks
+  - 还有`ejs`，`jade（pug）`，`handlebars`，`nunjucks`
 
 安装：
 
@@ -106,7 +106,7 @@ app.engine('html', require('express-art-template'));
 - `res.render('html模板名', {模板数据})`
 - 第一个参数不能写路径，默认会去项目中的views目录查找该模板文件。也就是说开发人员把所有的视图文件都放到views目录中。
 ```javascript
-app.get('/',function(req,res){
+app.get('/', function(req,res){
     res.render('index.html', {
         title:'hello world'     
     });
@@ -219,8 +219,9 @@ app.listen(3000, function(){
     console.log('running...');
 })
 ```
+<br/>
 
-### 在Express中配置使用`express-session`插件操作
+>### 在Express中配置使用`express-session`插件操作
 
 > 参考文档：https://github.com/expressjs/session
 
@@ -266,176 +267,3 @@ delete req.session.foo
 提示：
 
 默认Session数据时内存储数据，服务器一旦重启，真正的生产环境会把Session进行持久化存储。
-
-
-
-
-
-
-#### 设计操作数据的API文件模块
-
-es6中的find和findIndex：
-
-find接受一个方法作为参数，方法内部返回一个条件
-
-find会便利所有的元素，执行你给定的带有条件返回值的函数
-
-符合该条件的元素会作为find方法的返回值
-
-如果遍历结束还没有符合该条件的元素，则返回undefined![image-20200313103810731](C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20200313103810731.png)
-
-```javascript
-/**
- * student.js
- * 数据操作文件模块
- * 职责：操作文件中的数据，只处理数据，不关心业务
- */
-var fs = require('fs');
- /**
-  * 获取所有学生列表
-  * return []
-  */
-exports.find = function(){
-    
-}
-
-
- /**
-  * 获取添加保存学生
-  */
-exports.save = function(){
-        
-}
-
-/**
- * 更新学生
- */
-exports.update = function(){
-        
-}
-
- /**
- * 删除学生
- */
-exports.delete = function(){
-        
-}
-```
-
-#### 步骤
-
-- 处理模板
-- 配置静态开放资源
-- 配置模板引擎
-- 简单的路由，/studens渲染静态页出来
-- 路由设计
-- 提取路由模块
-- 由于接下来的一系列业务操作都需要处理文件数据，所以我们需要封装Student.js'
-- 先写好student.js文件结构
-  - 查询所有学生列别哦的API
-  - findById
-  - save
-  - updateById
-  - deleteById
-- 实现具体功能
-  - 通过路由收到请求
-  - 接受请求中的参数（get，post）
-    - req.query
-    - req.body
-  - 调用数据操作API处理数据
-  - 根据操作结果给客户端发送请求
-
-- 业务功能顺序
-  - 列表
-  - 添加
-  - 编辑
-  - 删除
-
-#### 子模板和模板的继承（模板引擎高级语法）【include，extend，block】
-
-注意:
-
-模板页：
-
-```javascript
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>模板页</title>
-	<link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css"/>
-	{{ block 'head' }}{{ /block }}
-</head>
-<body>
-	<!-- 通过include导入公共部分 -->
-	{{include './header.html'}}
-	
-	<!-- 留一个位置 让别的内容去填充 -->
-	{{ block  'content' }}
-		<h1>默认内容</h1>
-	{{ /block }}
-	
-	<!-- 通过include导入公共部分 -->
-	{{include './footer.html'}}
-	
-	<!-- 公共样式 -->
-	<script src="/node_modules/jquery/dist/jquery.js" ></script>
-	<script src="/node_modules/bootstrap/dist/js/bootstrap.js" ></script>
-	{{ block 'script' }}{{ /block }}
-</body>
-</html>
-```
-
-模板的继承：
-
-​	header页面：
-
-```javascript
-<div id="">
-	<h1>公共的头部</h1>
-</div>
-```
-
-​	footer页面：
-
-```javascript
-<div id="">
-	<h1>公共的底部</h1>
-</div>
-```
-
-模板页的使用：
-
-```javascript
-<!-- 继承(extend:延伸，扩展)模板也layout.html -->
-<!-- 把layout.html页面的内容都拿进来作为index.html页面的内容 -->
-{{extend './layout.html'}}
-
-<!-- 向模板页面填充新的数据 -->
-<!-- 填充后就会替换掉layout页面content中的数据 -->
-<!-- style样式方面的内容 -->
-{{ block 'head' }}
-	<style type="text/css">
-		body{
-			background-color: skyblue;
-		}
-	</style>
-{{ /block }}
-{{ block 'content' }}
-	<div id="">
-		<h1>Index页面的内容</h1>
-	</div>
-{{ /block }}
-<!-- js部分的内容 -->
-{{ block 'script' }}
-	<script type="text/javascript">
-		
-	</script>
-{{ /block }}
-```
-
-最终的显示效果：
-
-![image-20200316134759517](C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20200316134759517.png)
