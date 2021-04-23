@@ -24,10 +24,11 @@ a = tree.xpath('/bookstore/book/title[@lang="cn"]')
 a = tree.xpath('//title[@lang="cn"]/following::*[1]')
 a = tree.xpath('//title[@lang="cn"]/../preceding-sibling::book[1]')
 a = tree.xpath('//title[@lang="cn"]/../preceding-sibling::book[2]/price/text()')
+a = tree.xpath('//title[@lang="eng"]/../following-sibling::book[1]')
 
 ```
 
-
+http://www.sqlfiddle.com/#!18
 
 ```sql
 CREATE TABLE TEST(
