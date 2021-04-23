@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<bookstore>
+    <book>
+        <title lang="eng">Harry Potter</title>
+        <author>J. K. Rowling</author>
+        <price>29.99</price>
+    </book>
+    <book>
+        <title lang="eng">Jane Eyre</title>
+        <author>Charlotte Brontë</author>
+        <price>39.95</price>
+    </book>
+    <book>
+        <title lang="cn">平凡的世界</title>
+        <author>路遥</author>
+        <price>25.8</price>
+    </book>
+</bookstore>
