@@ -1,6 +1,6 @@
-## Mongodb
+# Mongodb
 >### 基本命令
-###1. 数据库操作
+## 1. 数据库操作
 ```cpp
 // 创建数据库
 use DATABASE_NAME
@@ -12,7 +12,7 @@ show databases
 // 删除数据库
 db.dropDatabase()
 ```
-###2. 集合操作
+## 2. 集合操作
 ```cpp
 // 创建集合
 db.createCollection(name, options)
@@ -24,7 +24,7 @@ show collections
 // 删除集合
 db.COLLECTION_NAME.drop()    
 ```
-###3. 文档基本CRUD
+## 3. 文档基本CRUD
 ```cpp
 // json格式的document
 document = {
@@ -33,7 +33,7 @@ document = {
     "height": 170
 }
 ```
-###3.1 插入文档
+### 3.1 插入文档
 ```cpp
 db.COLLECTION_NAME.insert(document) // COLLECTION_NAME是集合实际名称，如movie
 db.COLLECTION_NAME.insertOne(document)  // 插入单条文档，同上
@@ -60,7 +60,7 @@ db.collection.insertMany(
 - `ordered`：指定是否按顺序写入，默认 true，按顺序写入。
 &nbsp;
 
-###3.2 查询文档
+### 3.2 查询文档
 ```cpp
 db.COLLECTION_NAME.find(query, projection)
 db.COLLECTION_NAME.find().pretty()  // pretty()格式化方式显示文档
@@ -76,7 +76,7 @@ db.movie.find({"id": "123"}, {"name": 1, "_id": 0})
 ```
 &nbsp;
 
-###3.3 修改文档
+### 3.3 修改文档
 ```cpp
 db.COLLECTION_NAME.update(
    <query>,
@@ -112,7 +112,7 @@ db.movie.update({"id": "123"}, {$set: {"name": "pineapple"}})    // 只更新nam
 ```
 &nbsp;
 
-###3.4 删除文档
+### 3.4 删除文档
 ```cpp
 db.collection.remove(
    <query>,
@@ -130,7 +130,7 @@ db.collection.remove(
 
 
 >### 豆瓣电影数据库实例
-#### 数据
+### 数据
 ```python
 {
     "movieId": "1292052",
@@ -253,7 +253,7 @@ db.collection.remove(
 }
 ```
 
-#### 数据查询
+### 数据查询
 (1) 查询所有电影的id及名称
 ```cpp
 > db.movie.find({}, {"_id": 0, "movieId": 1, "movieName": 1})
@@ -334,7 +334,7 @@ db.collection.remove(
 ```
 &nbsp;
 
-#### 数据更新
+### 数据更新
 (1) 修改电影《肖申克的救赎》的评分
 ```cpp
 > db.movie.update({"movieName": "肖申克的救赎"}, {$set: {"rating": 9.8}})
