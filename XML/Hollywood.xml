@@ -1,0 +1,178 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<Hollywood xmlns="urn:Hollywood" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:Hollywood movie.xsd">
+	<movieSet>
+		<movie>
+			<movieName>Schindler's List</movieName>
+			<director>Steven Spielberg</director>
+			<publishYear>1993</publishYear>
+			<length>195</length>
+			<genres>
+				<tag>Biography</tag>
+				<tag>Drama</tag>
+				<tag>History</tag>
+			</genres>
+			<actors>
+				<actor>Liam Neeson</actor>
+				<actor>Ben Kingsley</actor>
+				<actor>Ralph Fiennes</actor>
+				<actor>Caroline Goodall</actor>
+			</actors>
+			<description>In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.</description>
+		</movie>
+		<movie>
+			<movieName>Forrest Gump</movieName>
+			<director>Robert Zemeckis</director>
+			<publishYear>1994</publishYear>
+			<length>142</length>
+			<genres>
+				<tag>Drama</tag>
+				<tag>Romance</tag>
+			</genres>
+			<actors>
+				<actor>Tom Hanks</actor>
+				<actor>Rebecca Williams</actor>
+				<actor>Sally Field</actor>
+				<actor>Michael Conner Humphreys</actor>
+			</actors>
+			<description>The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.</description>
+		</movie>
+		<movie>
+			<movieName>Inception</movieName>
+			<director>Christopher Nolan</director>
+			<publishYear>2010</publishYear>
+			<length>148</length>
+			<genres>
+				<tag>Action</tag>
+				<tag>Adventure</tag>
+				<tag>Sci-Fi</tag>
+				<tag>Thriller</tag>
+			</genres>
+			<actors>
+				<actor>Leonardo DiCaprio</actor>
+				<actor>Joseph Gordon-Levitt</actor>
+				<actor>Elliot Page</actor>
+				<actor>Tom Hardy</actor>
+				<actor>Ken Watanabe</actor>
+			</actors>
+			<description>A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.</description>
+		</movie>
+		<movie>
+			<movieName>Catch Me If You Can</movieName>
+			<director>Steven Spielberg</director>
+			<publishYear>2002</publishYear>
+			<length>141</length>
+			<genres>
+				<tag>Biography</tag>
+				<tag>Crime</tag>
+				<tag>Drama</tag>
+			</genres>
+			<actors>
+				<actor>Leonardo DiCaprio</actor>
+				<actor>Tom Hanks</actor>
+				<actor>Christopher Walken</actor>
+				<actor>Martin Sheen</actor>
+				<actor>Nathalie Baye</actor>
+			</actors>
+			<description>Barely 21 yet, Frank is a skilled forger who has passed as a doctor, lawyer and pilot. FBI agent Carl becomes obsessed with tracking down the con man, who only revels in the pursuit.</description>
+		</movie>
+		<movie>
+			<movieName>The Aviator</movieName>
+			<director>Martin Scorsese</director>
+			<publishYear>2004</publishYear>
+			<length>170</length>
+			<genres>
+				<tag>Biography</tag>
+				<tag>Drama</tag>
+			</genres>
+			<actors>
+				<actor>Leonardo DiCaprio</actor>
+				<actor>Cate Blanchett</actor>
+				<actor>Kate Beckinsale</actor>
+				<actor>John C. Reilly</actor>
+				<actor>Alec Baldwin</actor>
+			</actors>
+			<description>A biopic depicting the early years of legendary Director and aviator Howard Hughes' career from the late 1920s to the mid 1940s.</description>
+		</movie>
+	</movieSet>
+	
+	<actorSet>
+		<actor gender="male">
+			<actorName>Liam Neeson</actorName>
+			<birthday>
+				<year>1952</year>
+				<month>6</month>
+				<day>7</day>
+			</birthday>
+			<country>Ireland</country>
+			<height>193</height>
+			<weight>80</weight>
+		</actor>
+		<actor gender="male">
+			<actorName>Ben Kingsley</actorName>
+			<birthday>
+				<year>1943</year>
+				<month>12</month>
+				<day>31</day>
+			</birthday>
+			<country>England</country>
+			<height>173</height>
+			<weight>65</weight>
+		</actor>
+		<actor gender="male">
+			<actorName>Ralph Fiennes</actorName>
+			<birthday>
+				<year>1962</year>
+				<month>12</month>
+				<day>22</day>
+			</birthday>
+			<country>England</country>
+			<height>180</height>
+			<weight>70</weight>
+		</actor>
+		<actor gender="female">
+			<actorName>Caroline Goodall</actorName>
+			<birthday>
+				<year>1959</year>
+				<month>11</month>
+				<day>13</day>
+			</birthday>
+			<country>England</country>
+			<height>176</height>
+			<weight>62</weight>
+		</actor>
+		<actor gender="male">
+			<actorName>Leonardo DiCaprio</actorName>
+			<birthday>
+				<year>1974</year>
+				<month>11</month>
+				<day>11</day>
+			</birthday>
+			<country>America</country>
+			<height>180</height>
+			<weight>77</weight>
+		</actor>
+		<actor gender="male">
+			<actorName>Tom Hanks</actorName>
+			<birthday>
+				<year>1956</year>
+				<month>7</month>
+				<day>9</day>
+			</birthday>
+			<country>America</country>
+			<height>183</height>
+			<weight>74</weight>
+		</actor>
+		<actor gender="female">
+			<actorName>Cate Blanchett</actorName>
+			<birthday>
+				<year>1969</year>
+				<month>5</month>
+				<day>14</day>
+			</birthday>
+			<country>Australia</country>
+			<height>174</height>
+			<weight>60</weight>
+		</actor>
+	</actorSet>
+	
+</Hollywood>

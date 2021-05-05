@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:Hollywood="urn:Hollywood" targetNamespace="urn:Hollywood">
+	<xs:element name="Hollywood">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="movieSet">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="movie" type="Hollywood:movie" maxOccurs="unbounded"/>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="actorSet">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="actor" type="Hollywood:actor" maxOccurs="unbounded"/>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="movie">
+		<xs:sequence>
+			<xs:element name="movieName" type="xs:string"/>
+			<xs:element name="director" type="xs:string"/>
+			<xs:element name="publishYear" type="Hollywood:year"/>
+			<xs:element name="length" type="xs:integer"/>
+			<xs:element name="genres">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="tag" type="xs:string" maxOccurs="5"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="actors">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="actor" type="xs:string" maxOccurs="unbounded"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="description" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="actor">
+		<xs:sequence>
+			<xs:element name="actorName" type="xs:string"/>
+			<xs:element name="birthday">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="year" type="Hollywood:year"/>
+						<xs:element name="month" type="Hollywood:month"/>
+						<xs:element name="day" type="Hollywood:day"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="country" type="xs:string"/>
+			<xs:element name="height" type="xs:integer"/>
+			<xs:element name="weight" type="xs:integer"/>
+		</xs:sequence>
+		<xs:attribute name="gender" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="male"/>
+					<xs:enumeration value="female"/>
+					<xs:enumeration value="unknown"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:simpleType name="year">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1900"/>
+			<xs:maxInclusive value="2100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="month">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="day">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="31"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>
