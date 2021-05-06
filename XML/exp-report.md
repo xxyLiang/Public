@@ -151,6 +151,7 @@
 # 使用/text()来获取电影字符串，如果省略，则获取到movieName整个元素，如下面其他查询
 ```
 查询结果：
+
 <img src="./pics/query1.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -159,6 +160,7 @@
 /Hollywood/actorSet/actor[@gender="male"]/actorName
 ```
 查询结果：
+
 <img src="./pics/query2.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -167,6 +169,7 @@
 //movie[movieName="Inception"]/actors/actor
 ```
 查询结果：
+
 <img src="./pics/query3.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -175,6 +178,7 @@
 //genres[tag="Drama"]/../movieName
 ```
 查询结果：
+
 <img src="./pics/query4.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -183,6 +187,7 @@
 //movie[publishYear>=2000]/movieName
 ```
 查询结果：
+
 <img src="./pics/query5.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -191,6 +196,7 @@
 //actor[country="America"]/actorName
 ```
 查询结果：
+
 <img src="./pics/query6.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -201,6 +207,7 @@ order by $movie/movieName
 return $movie/movieName/text()
 ```
 查询结果：
+
 <img src="./pics/query7.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -212,6 +219,7 @@ order by $movie/movieName
 return $movie/movieName/text()
 ```
 查询结果：
+
 <img src="./pics/query8.png" width=70% alt="Schema"/>
 &nbsp;
 
@@ -223,5 +231,6 @@ order by $movie/movieName
 return $movie/movieName/text()
 ```
 查询结果：
+
 <img src="./pics/query9.png" width=70% alt="Schema"/>
 &nbsp;
