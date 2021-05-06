@@ -77,46 +77,47 @@ CREATE TABLE student (
 2. 用OQL查询演员张晓丽所出演的电影的电影名和制作年份。
 
 ```sql
-CREATE TYPE Addresss AS object(
-  province varchar(20),
-  city varchar(20),
-  street varchar(30)
-);
+CREATE TYPE Addresss AS object(						-- 创建地址类型
+    province varchar(20),
+    city varchar(20),
+    street varchar(30)
+);	
 
-CREATE TYPE char_list is TABLE of varchar(100);
+CREATE TYPE char_list is TABLE of varchar(100);		-- 创建字符串列表类型
 
-CREATE OR REPLACE TYPE person force AS object(
-  pid integer,
-  pname varchar(100),
+CREATE OR REPLACE TYPE person force AS object(		-- 创建人物类型
+    pid integer,
+    pname varchar(100),
 	age integer,
 	Address Addresss,
-  MEMBER FUNCTION get_id RETURN integer
+    MEMBER FUNCTION get_id RETURN integer			-- 使用MEMBER FUNCTION声明person的get_id()函数
 );
-CREATE OR REPLACE TYPE BODY person as 
+CREATE OR REPLACE TYPE BODY person as 				-- 使用TYPE BODY关键字定义对象的方法
 MEMBER FUNCTION get_id RETURN integer IS
 BEGIN
-  return pid;
+    return pid;
 END;
 END;
 
-CREATE TABLE persons of person;
+CREATE TABLE persons of person;						-- 创建基于person类型的表persons
 
-CREATE OR REPLACE TYPE Movie as object(
-  mid integer,
-  mname varchar(100),
-  myear integer,
-  MovieLength integer,
-  Actors char_list,
-  MEMBER FUNCTION get_length RETURN integer
+CREATE OR REPLACE TYPE Movie as object(				-- 创建电影类型
+    mid integer,
+    mname varchar(100),
+    myear integer,
+    MovieLength integer,
+    Actors char_list,
+    MEMBER FUNCTION get_length RETURN varchar		-- 使用MEMBER FUNCTION声明movie的get_length()函数
 ) ;
 
-CREATE OR REPLACE TYPE BODY Movie as 
-MEMBER FUNCTION get_length RETURN integer is
+CREATE OR REPLACE TYPE BODY Movie as 				-- 使用TYPE BODY关键字定义对象的方法
+MEMBER FUNCTION get_length RETURN varchar is
 BEGIN 
-  RETURN MovieLength;
+    RETURN 'The length of "'|| mname || '" is ' || MovieLength || ' minutes.';
 END;
 END;
 
+-- 由于演员字段是一个字符串列表，需要使用NESTED TABLE关键字创建一个嵌套表
 CREATE TABLE movies of Movie NESTED TABLE Actors STORE AS Actors1;
 
 insert into persons values
@@ -132,12 +133,37 @@ insert into persons values
 
 insert into Movies values(
 	1,
-  'movie1',
-  2019,
-  101,
-  char_list('张晓丽', '丽丽')
-) 
+    'wonderful',
+    2019,
+    101,
+    char_list('张晓丽', '丽丽')
+);
+insert into Movies values(
+	2,
+    'beautiful',
+    2018,
+    136,
+    char_list('莉莉', '丽丽')
+);
+insert into Movies values(
+	3,
+    'wonderland',
+    2015,
+    162,
+    char_list('张晓丽', '李丽')
+);
+insert into Movies values(
+	4,
+    'Bravo',
+    2020,
+    142,
+    char_list('张晓丽', '小李子')
+);
 
-select t.mname, t.MovieLength from movies t, table(t.Actors) tt where tt.column_value in ('张晓丽')
+SELECT t.mname, t.myear FROM movies t, table(t.Actors) tt WHERE tt.column_value in ('张晓丽')
+-- 演员字段属于嵌套表，需要用特殊的查询语句
+
+select t.get_length() from movies t where mname='wonderful';
+
 ```
 
