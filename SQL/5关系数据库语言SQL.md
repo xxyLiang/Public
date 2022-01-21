@@ -9,7 +9,9 @@
    - 具有交互式命令和嵌入式两种工作方式：在交互式命令工作方式下，用户可以以交互式命令方式通过直接输入SQL命令对数据库进行操作；在嵌入式工作方式下，SQL语句可以被嵌入到某种高级语言程序中实现对数据库的操作。
    - 支持数据库的三级模式结构：外模式、逻辑模式（概念模式）、内模式
 
-<br/><br/>
+
+
+
 
 >## 数据库的创建、删除
 ### **创建数据库**
@@ -47,7 +49,8 @@ drop database stuDB
 >## 表的创建、修改、删除
 
 ```sql
-CREATE TABLE {表名}(
+CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name
+(
 　　列名 数据类型 [列级完整性约束条件],
 　　列名 数据类型 [列级完整性约束条件],
     ......
@@ -60,78 +63,109 @@ create table stuMarks
     ExamNo      int     identity(1,1) primary key,
     stuNo       char(6) not null,
     writtenExam int     not null,
-    LabExam     int     not null
+    LabExam     int     not null,
+    FOREIGN KEY ExamNo REFERENCES exam_info(ExamNo)
 )
 ```
 
 完整性约束条件:
-1. `not null` / `null`
-2. default : 设置默认值，格式: `DEFAULT value`
-3. primary key : 定义主码，保证惟一性和非空性
+1. `NOT NULL` / `NULL` (不声明则默认`NULL`)
+2. `DEFAULT` : 设置默认值，格式 `DEFAULT value`
+2. `AUTO_INCREMENT`：自增属性，只有整型字段能设置
+3. `PRIMARY KEY` : 定义主码，保证惟一性和非空性，一个表只能有一个，但可以联合多个字段
     列级： 列后 `primary key`
     表级： 最后 `primary key({列名}, {列名}, ...)`
-4. unique :不允许列中出现重复的属性值，格式同3
-5. foreign key :定义参照完整性 
+4. `UNIQUE` :不允许列中出现重复的属性值，格式同3
+5. `FOREIGN KEY` ：定义参照完整性 
     列级： 列后 `references 参照表名(主键名)`
     表级： 最后 `foreign key 列名 references 参照表名(主键名)`
-6. check : 检查约束
+6. `CHECK` : 检查约束
     列级、表级： `check({约束表达条件式})`
     --所有约束前可加[constraint 约束名]，若不指定contraint的约束名，则会随机生成一个约束名
 
 #### 系统数据类型：  [http://www.w3school.com.cn/sql/sql_datatypes.asp]
 
-<br/>
+
 
 ### **修改表**
 
-- 修改表名：`EXEC sp_rename {原表名}, {新表名}`
+- 修改表名：`ALTER TABLE 旧表名 rename 新表名`
+
 - 复制表
-  - 复制整张表：`select * into {新表名} from {旧表名}`
+  - 复制整张表：`select * into 新表 from 旧表`
   - 复制表结构：`select * into {新表名} from {旧表名} where 1=2`　　　/* --where 1=2 永远为假，所以什么都不选择，只复制了表结构-- */
   - 复制表内容：`insert into {新表名} select * from {旧表名}`
+  
 - 列操作
-  - 增加字段：`alter table {表名} add {属性名} {属性类型} [列级约束条件]`
-  - 修改字段名：`exec sp_rename '{表名.(字段原名)}','{字段新名}','column'`
-  - 修改字段属性：`alter table {表名} alter column {字段名} {属性类型} [列级约束条件]`
-  - 删除字段：`alter table {表名} drop column {字段名}`
+  - 增加字段：`ALTER table 表名 ADD COLUMN 字段 字段类型 [列级约束条件] [AFTER 字段]`
+  - 修改字段名及属性：`ALTER TABLE 表名 CHANGE 旧字段 新字段 字段类型 [列级约束条件]  `
+  - 删除字段：`ALTER TABLE 表名 DROP COLUMN 字段`
+  
 - 约束操作
-  - 已有字段添加完整性约束：`alter table {表名} add [constraint 约束名]` + 表级约束条件 
+  - 已有字段添加完整性约束：`ALTER TABLE 表名 ADD [constraint 约束名]` + 表级约束条件 
     ```sql
-    alter table {表名} add [constraint 约束名] primary key(字段名)
-    alter table {表名} add [constraint 约束名] unique(字段名)
-    alter table {表名} add [constraint 约束名] foreign key (列名) references 参照表(列名)
-    alter table {表名} add [constraint 约束名] check(约束表达条件式)
+    ALTER TABLE 表名 ADD [CONSTRAINT 约束名] PRIMARY KEY (字段)
+    ALTER TABLE 表名 ADD [CONSTRAINT 约束名] UNIQUE (字段)
+    ALTER TABLE 表名 ADD [CONSTRAINT 约束名] FOREIGN KEY (字段) REFERENCES 参照表(字段)
+    ALTER TABLE 表名 ADD [CONSTRAINT 约束名] CHECK (约束表达条件式)
     --只有列级约束条件的default:
-    alter table {表名} add constraint 约束名 DEFAULT(value) for {列名}
+    ALTER TABLE 表名 ADD [CONSTRAINT 约束名] DEFAULT(value) FOR 字段
     ```
-  - 删除字段约束：`alter table {表名} drop [constraint] {约束名}`
+  - 删除字段约束：`alter table 表名 drop constraint 约束名`
   - 查询字段约束：`select * from information_schema.constraint_column_usage where TABLE_NAME = '{表名}'`
   - 查看字段缺省约束表达式：`select * from information_schema.columns where TABLE_NAME = '{表名}'`
 
 ### **删除表**
 
-- 删除整表：`drop table {表名}`
+- 删除整表：`DROP TABLE 表名`
 
-<br/><br/>
+
+
+
 
 >## 数据的插入、修改、删除
 
-- 数据插入：`insert into {表名}(field1,field2) values(value1,value2),(),()....`
+- 数据插入：
+
+  - ```sql
+    INSERT [INTO] 表名[(field1, field2)] VALUES(value1, value2)[,(...),(...),...]
+    INSERT [INTO] 表名 SET field1=expr1, field2=expr2, ..., fieldN=exprN
+    INSERT [INTO] 表名[(A_field1, A_field2)] SELECT B_field1, b_field2 from ...
+    ```
+
 - 数据修改：`update {表名} set 字段名=value [where条件]`
+
 - 删除表数据
   - `delete from {表名} [where条件]`　　　/* --删除表中的一条或多条数据，也可以删除全部数据--*/
   - `truncate table {表名}`　　　 /* --删除表中的全部数据--*/
 
-<br/><br/>
 
->## 数据查询
+
+
+
+>## 数据查询 SELECT
 
 ```sql
-select {目标列组}
+SELECT {目标列组}
     from {数据源}
     [where {元组选择条件}]
     [group by {分列组} [having {组选择条件}]]
     [order by {排序列} [asc | desc]]
+    
+-- 完整的SELECT语法
+SELECT 
+	[ALL | DISTINCT | DISTINCTROW]
+	SELECT_expr, ...
+	[INTO OUTFILE 'file_name' export_options | INTO DUMPFILE 'file_name']
+  [FROM table_name
+	[WHERE where_definition]
+	[GROUP BY {col_name | expr | position} [ASC | DESC], ... [WITH ROLLUP]]
+    [HAVING where_definition]
+    [ORDER BY {col_name | expr | position} [ASC | DESC], ...]
+    [LIMIT {[offSET,] row_count | row_count OFFSET offSET}]
+    [PROCEDURE procedure_name(argument_list)]
+    [FOR UPDATE | LOCK IN SHARE MODE]
+  ]
 ```
 - 选择列
   - distinct：用于返回唯一不同的值
@@ -180,27 +214,63 @@ select {目标列组}
 
 - where子句
   - like / not like （模糊查询）
+    - `WHERE name LIKE '蔡%坤' [ESCAPE '/']`
     - % 包含零个或更多字符的任意字符串。
     - _（下划线） 任何单个字符。
     - \[\]指定范围（例如[a-f]）或集合（例如 [abcdef]）内的任何单个字符。
     - [^] 不在指定范围（例如[\^a-f]）或集合（例如[\^abcdef]）内的任何单个字符
-    - `WHERE name LIKE '蔡%坤'`
+    - `ESCAPE`是转义，例如上面表示使用'/'替代'%'进行匹配
+    
+  - 正则匹配
+  
+    ```sql
+    SELECT col FROM tbl WHERE col regexp '^B[an]+a$'  -- 表示检索col以B开头、a结尾、中间一或多个an的记录
+    SELECT col FROM tbl WHERE col regexp 'Ba{2,10}' -- 表示检索col包含”Baaa(2~10个a)“的记录
+    ```
+  
   - [NOT] between and （范围比较）
+    
     - `expression [NOT] BETWEEN expression1 AND expression2`
     - `WHERE 出生时间 NOT BETWEEN '1989-1-1' and '1989-12-31’`
+    
   - IN / NOT IN：某列的某个值属于/不属于集合中的成员
     - `WHERE name IN (select ...)`
+    
   - ANY / SOME：某列的值满足集合中的一个/某些值
     - <数据> $\theta$ ANY/SOME <集合>
     - `WHERE name = ANY (SELECT ...)` 
+    
   - ALL：某列的值满足子查询中所有值的记录
     - <数据> $\theta$ ALL <集合>
     - `WHERE age > ALL (SELECT...)`
+    
   - EXISTS / NOT EXISTS：存在一个值满足条件/不存在任何值满足条件
     - EXISTS(<集合>)
     - `WHERE EXISTS (SELECT...)`
   
-<br/><br/>
+- 条件
+
+  - `IF(condition, if_true, if_false)`
+
+  - `IFNULL(expr1, expr2)` 若expr1为NULL，则返回expr2，否则返回expr1。
+
+  - `CASE WHEN`：
+
+    - ```sql
+      CASE 
+      WHEN condition1 THEN result1
+      WHEN condition2 THEN result2
+      ...
+      ELSE resultN
+      END
+      ```
+
+
+- `LIMIT [m,] n` ：表示从m+1行开始检索n条记录
+
+
+
+
 
 >## 视图
 - [https://www.cnblogs.com/Brambling/p/6731386.html]
@@ -245,7 +315,7 @@ select {目标列组}
 - 原理：[https://www.cnblogs.com/knowledgesea/p/3672099.html]
     ```sql
     CREATE [UNIQUE] [CLUSTERED|NONCLUSTERED] INDEX {index_name} 
-    ON {table_name|view_name} (column [ASC|DESC] [ ,...n ])
+    ON {table_name|view_name} (column[(lenghth)] [ASC|DESC] [ ,...n ])
     [with
       [PAD_INDEX]
       [[,]FILLFACTOR=fillfactor]
@@ -255,11 +325,26 @@ select {目标列组}
       [[,]SORT_IN_TEMPDB]
     ]
     [ ON filegroup ]
+    
+    
+    -- 也可以使用ALTER
+    ALTER TABLE 表名 ADD UNIQUE [index_name] on (columns(length))
+    
+    -- 删除
+    ALTER TABLE 表名 DROP INDEX index_name
     ```
+    
 - AD_INDEX：用于指定索引中间级中每个页（节点）上保持开放的空间。
+
 - FILLFACTOR = fillfactor：用于指定在创建索引时，每个索引页的数据占索引页大小的百分比，fillfactor的值为1到100。
+
 - IGNORE_DUP_KEY：用于控制当往包含于一个唯一聚集索引中的列中插入重复数据时SQL Server所作的反应。
+
 - DROP_EXISTING：用于指定应删除并重新创建已命名的先前存在的聚集索引或者非聚集索引。
+
 - STATISTICS_NORECOMPUTE：用于指定过期的索引统计不会自动重新计算。
+
 - SORT_IN_TEMPDB：用于指定创建索引时的中间排序结果将存储在 tempdb 数据库中。
+
 - ON filegroup：用于指定存放索引的文件组。
+
