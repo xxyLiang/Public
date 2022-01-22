@@ -70,20 +70,27 @@ create table stuMarks
 
 完整性约束条件:
 1. `NOT NULL` / `NULL` (不声明则默认`NULL`)
-2. `DEFAULT` : 设置默认值，格式 `DEFAULT value`
-2. `AUTO_INCREMENT`：自增属性，只有整型字段能设置
-3. `PRIMARY KEY` : 定义主码，保证惟一性和非空性，一个表只能有一个，但可以联合多个字段
-    列级： 列后 `primary key`
-    表级： 最后 `primary key({列名}, {列名}, ...)`
-4. `UNIQUE` :不允许列中出现重复的属性值，格式同3
-5. `FOREIGN KEY` ：定义参照完整性 
-    列级： 列后 `references 参照表名(主键名)`
-    表级： 最后 `foreign key 列名 references 参照表名(主键名)`
-6. `CHECK` : 检查约束
-    列级、表级： `check({约束表达条件式})`
-    --所有约束前可加[constraint 约束名]，若不指定contraint的约束名，则会随机生成一个约束名
 
-#### 系统数据类型：  [http://www.w3school.com.cn/sql/sql_datatypes.asp]
+2. `DEFAULT` : 设置默认值，格式 `DEFAULT value`
+
+3. `AUTO_INCREMENT`：自增属性，只有整型字段能设置
+
+3. `PRIMARY KEY` : 定义主码，保证惟一性和非空性，一个表只能有一个，但可以联合多个字段形成复合主键。
+    列级： 列后 `primary key`；
+    表级： 最后 `primary key({列名}, {列名}, ...)`
+    
+5. `UNIQUE` :不允许列中出现重复的属性值，格式同3
+
+5. `FOREIGN KEY` ：定义参照完整性。
+    列级： 列后 `references 参照表名(主键名)`；
+    表级： 最后 `foreign key 列名 references 参照表名(主键名)`
+    
+6. `CHECK` : 检查约束。
+    列级、表级： `check({约束表达条件式})`；
+    
+    所有约束前可加`constraint 约束名`，若不指定contraint的约束名，则会随机生成一个约束名
+
+#### [系统数据类型](http://www.w3school.com.cn/sql/sql_datatypes.asp)
 
 
 
@@ -127,17 +134,37 @@ create table stuMarks
 
 - 数据插入：
 
-  - ```sql
-    INSERT [INTO] 表名[(field1, field2)] VALUES(value1, value2)[,(...),(...),...]
-    INSERT [INTO] 表名 SET field1=expr1, field2=expr2, ..., fieldN=exprN
-    INSERT [INTO] 表名[(A_field1, A_field2)] SELECT B_field1, b_field2 from ...
-    ```
+  ```sql
+  INSERT [INTO] 表名[(field1, field2)] VALUES(value1, value2)[,(...),(...),...]
+  INSERT [INTO] 表名 SET field1=expr1, field2=expr2, ..., fieldN=exprN
+  INSERT [INTO] 表名[(A_field1, A_field2)] SELECT B_field1, B_field2 from ...
+  ```
 
 - 数据修改：`update {表名} set 字段名=value [where条件]`
 
 - 删除表数据
-  - `delete from {表名} [where条件]`　　　/* --删除表中的一条或多条数据，也可以删除全部数据--*/
-  - `truncate table {表名}`　　　 /* --删除表中的全部数据--*/
+  
+  ```sql
+  # 单表删除
+  DELETE FROM tbl_name 
+  [WHERE where_definition]
+  [ORDER BY ...] 
+  [LIMIT row_count]
+  
+  # 多表删除
+  DELETE tbl_name [, tbl_name ...] 
+  FROM table_references
+  [WHERE where_definition]
+  -- 或：
+  DELETE FROM tbl_name [, tbl_name ...] 
+  USING table_references
+  [WHERE where_definition]
+  -- 例如：
+  DELETE t1 FROM table1 AS t1, table2 AS t2 WHERE t1.id=t2.id	 -- 删除表t1中id出现在表t2中的记录，t2不会被删除
+  
+  # 清空表
+  TRUNCATE TABLE tbl_name
+  ```
 
 
 
@@ -248,7 +275,7 @@ SELECT
     - EXISTS(<集合>)
     - `WHERE EXISTS (SELECT...)`
   
-- 条件
+- 条件/流程控制
 
   - `IF(condition, if_true, if_false)`
 
@@ -256,15 +283,25 @@ SELECT
 
   - `CASE WHEN`：
 
-    - ```sql
-      CASE 
-      WHEN condition1 THEN result1
-      WHEN condition2 THEN result2
-      ...
-      ELSE resultN
-      END
-      ```
+    ```sql
+    CASE 
+    WHEN condition1 THEN result1
+    [WHEN condition2 THEN result2
+    ...
+    ELSE resultN]
+    END
+    ```
 
+  - `CASE value`：
+
+    ```sql
+    CASE value_name
+    WHEN value1 THEN result1
+    [WHEN value2 Then result2
+    ...
+    ELSE result N]
+    END
+    ```
 
 - `LIMIT [m,] n` ：表示从m+1行开始检索n条记录
 
@@ -272,14 +309,123 @@ SELECT
 
 
 
+> ## MySQL内置函数
+
+```sql
+#1 字符串处理函数
+#1.1 字符串编码相关
+ASCII(str)  					-- 返回字符串的第一个字符的ASC码值 （0~255）
+ORD(str)						-- 返回多字节字符串的第一个字符的ASC码值 （即可计算汉字的ASC）
+CHAR(N, ...)  					-- 将整数值转换为字符串，如CHAR(77, 121, 83, 81, '76') 返回'MySQL'
+LENGTH(str)						-- 取字符串长度，一个汉字算2个字节
+CHAR_LENGTH(str)				-- 取字符串长度，一个汉字算1个字节
+
+#1.2 字符串选择与搜索
+LEFT(str, len) / RIGHT(str, len)				-- 从左边/右边取子字符串，即str[:len] / str[-len:]
+MID(str,pos,len) / SUBSTR(str,pos[,len])		-- 从中间取子字符串，返回str[pos:pos+len]
+INSTR(str, substr)				-- 子字符串第一次出现位置(find)
+LOCATE（substr,str[,pos])		-- 子字符串第一次出现的位置，如带pos，从起始位置pos开始算起，即从str[pos:]中搜索
+
+#1.3 字符串替换
+INSERT(str, pos, len, newstr)	-- 返回将str的pos~pos+len字符替换为newstr的字符串，pos从1开始计算
+REPLACE(str,from_str,to_str)	-- 将字符串替换，如将所有'abc'替换为'cba'
+LPAD(str,len,padstr) / RPAD(str,len,padstr)			-- 填充，其左边/右边由字符串padstr填补到len字符长度
+TRIM([{BOTH|LEADING|TRAILING} [remstr] FROM] str)	-- 去掉左右/仅左/仅右侧的remstr字符串，默认为BOTH和空格
+LTRIM(str) / RTRIM(str)			-- 去掉左侧/右侧空格
+LCASE(str) / LOWER(str)			-- 转小写
+UCASE(str) / UPPER(str)			-- 转大写
+REVERSE(str)					-- 字符串顺序取反
+
+#1.4 字符串拼接与生成
+REPEAT(str, count)				-- 将字符串重复若干次
+CONCAT(str1, str2, ...)			-- 字符串拼接
+SPACE(N)						-- 返回若干个空格
+
+#1.5 其他
+ELT(N, str1, str2, str3, ...)		-- 返回指定位置的字符串，如N=2返回str2
+FIELD(str, str1, str2, str3, ...)  	-- 返回str在列表中的序号（和ELT相对应）
+STRCMP(expr1, expr2)				-- 比较字符串大小，expr1 <=> expr2 分别返回-1,0,1
+
+
+#2 数学函数
+ABS(X)							-- 取绝对值
+CEILING(X)						-- 向上取整，即返回不小于X的最小整数
+FLOOR(X)						-- 向下取整，即返回不大于X的最大整数
+ROUND(X)						-- 四舍五入取整
+MOD(N, M)						-- 取余数，相当于N % M
+SQRT(X)							-- 开方
+EXP(X)
+LOG(B,X)						-- B默认为e
+LN(X) LOG2(X) LOG10(X)
+POW(X, Y)
+RAND(N)							-- 返回[0,1]的随机数，整数N是种子值，常用于ORDER BY RAND()
+FORMAT(X, D)					-- 四舍五入保留小数点后D位，不足则补全，返回字符串
+TRUNCATE(X, D)					-- 直接舍去小数点后D位，D可为负数，返回数字
+
+
+#1 返回最大/最小的参数值
+GREATEST(value1, value2, ...)  # 如果全部为NULL则返回NULL
+LEAST(value1, value2, ...)	# 如果存在NULL则返回NULL
+# MAX MIN是返回列中最大/小的值，GREATEST LEAST是返回行中最大/小的字段的值
+
+#2 返回列表中第一个非NULL值
+COALESCE(NULL, 3, NULL, 4) -- 3
+COALESCE(NULL, NULL)  -- NULL
+COALESCE(1,2,3)  -- TRUE
+
+#3 类型转换
+CAST(expr AS type)
+
+#4 分段函数
+INTERVAL(N, N1, N2, N3, ...)
+# 对于N1<N2<N3<...<Nn的数据，返回满足N<Nm的最小m值。例如，INTERVAL(percent, 25, 50, 75)用于返回percent所在四分位区间，当percent=10,返回0；percent=30，返回1；percent=76，返回3.
+```
+
+
+
+
+
 >## 视图
-- [https://www.cnblogs.com/Brambling/p/6731386.html]
+- [视图的详细介绍](https://www.cnblogs.com/Brambling/p/6731386.html)
 - 创建/修改视图
   - `CREATE/ALTER VIEW {view_name} AS SELECT {column_names} FROM {table} [where条件]`
 - 删除视图
   - `DROP VIEW {view_name}`
 
-<br/><br/>
+
+
+> ## 存储过程
+
+```sql
+DROP PROCEDURE IF EXISTS math;
+delimiter $		# 更改定界符
+CREATE PROCEDURE math(IN a INT, IN b Int)
+BEGIN
+	set @var1 = 1;
+	set @var2 = 2;
+	SELECT @sum:=(a+b) AS sum, @dif:=(a-b) AS dif;		-- 在SELECT中只能使用:=赋值，SET中可使用=和:=
+END;
+$
+delimiter ;
+
+# 一些适用于存储过程的语句
+while condition_ do
+...
+end while	-- end后面需加语句类型
+
+loop
+...
+end loop
+
+repeat
+...
+until condition_
+end repeat
+```
+
+
+
+
 
 >## 游标
 - 定义游标：
@@ -309,10 +455,13 @@ SELECT
 - 利用游标修改和删除数据：首先使用FETCH操作移动游标指针，使其指向要修改的行和要删除的行，然后利用UPDATE/DELETE语句并辅以`WHERE CURRENT OF <游标名>`子句进行操作。
 - 关闭与删除游标：`CLOSE/DEALLOCATE {{[GLOBAL] <游标名>} | <游标变量名>}`
 
-<br/><br/>
+
+
+
 
 >## 索引
-- 原理：[https://www.cnblogs.com/knowledgesea/p/3672099.html]
+- [原理](https://www.cnblogs.com/knowledgesea/p/3672099.html)
+  
     ```sql
     CREATE [UNIQUE] [CLUSTERED|NONCLUSTERED] INDEX {index_name} 
     ON {table_name|view_name} (column[(lenghth)] [ASC|DESC] [ ,...n ])
