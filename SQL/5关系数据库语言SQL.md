@@ -363,25 +363,97 @@ FORMAT(X, D)					-- 四舍五入保留小数点后D位，不足则补全，返�
 TRUNCATE(X, D)					-- 直接舍去小数点后D位，D可为负数，返回数字
 
 
-#1 返回最大/最小的参数值
+#3 返回最大/最小的参数值
 GREATEST(value1, value2, ...)  # 如果全部为NULL则返回NULL
 LEAST(value1, value2, ...)	# 如果存在NULL则返回NULL
 # MAX MIN是返回列中最大/小的值，GREATEST LEAST是返回行中最大/小的字段的值
 
-#2 返回列表中第一个非NULL值
+#4 返回列表中第一个非NULL值
 COALESCE(NULL, 3, NULL, 4) -- 3
 COALESCE(NULL, NULL)  -- NULL
 COALESCE(1,2,3)  -- TRUE
 
-#3 类型转换
-CAST(expr AS type)
+#5 类型转换
+CAST(expr AS type)	-- 转字符type为'CHAR'，整数为'SIGNED'或'UNSIGNED'
 
-#4 分段函数
+#6 分段函数
 INTERVAL(N, N1, N2, N3, ...)
 # 对于N1<N2<N3<...<Nn的数据，返回满足N<Nm的最小m值。例如，INTERVAL(percent, 25, 50, 75)用于返回percent所在四分位区间，当percent=10,返回0；percent=30，返回1；percent=76，返回3.
 ```
 
 
+
+> ## 窗口函数
+
+```sql
+# 第一种表达
+func(args, ...) OVER([partition-by-clause] [order-by-clause] [windowing-clause])
+# 第二种表达
+func(args, ...) OVER w
+FROM ... [WHERE ...]
+	window w as ([partition-by-clause] [order-by-clause] [windowing-clause])
+	[LIMIT ...]
+
+-- 其中，windowing-cluase为
+rows between <start expr> and [end expr]
+<start expr> is [unbounded preceding | current row | n preceding | n following]
+<end expr> is [unbounded preceding | current row | n preceding | n following]
+
+# 例如
+SELECT 
+	tid,
+	replies, 
+	sum(replies) OVER(order by tid rows between 1 preceding and current row) as total
+	FROM `threads` where CAST(tid as UNSIGNED) BETWEEN 1000003 and 1000020 limit 5
+# or
+SELECT 
+	tid,
+	replies, 
+	sum(replies) OVER w as total
+	FROM `threads` where CAST(tid as UNSIGNED) BETWEEN 1000003 and 1000020
+	window w as (order by tid rows between 1 preceding and current row)
+	LIMIT 5
+```
+
+注意：选择top-N时不能直接`where ranking<N`，因为where在窗口函数前执行，在where执行时并没有ranking字段
+
+```sql
+#查询每个学生成绩最高的两个科目
+SELECT * FROM 
+	(SELECT 
+     姓名, 
+     科目,
+     rank() over (PARTITION BY 姓名 ORDER BY 成绩 DESC) AS ranking 
+     FROM score) AS t
+WHERE ranking<=2
+
+# 而不能
+SELECT 
+	姓名, 
+	科目,
+	rank() over (PARTITION BY 姓名 ORDER BY 成绩 DESC) AS ranking 
+	FROM score WHERE ranking<=2
+```
+
+
+
+专用窗口函数：
+
+- 排名相关
+  - `row_number()`：对行进行排序并为每一行增加一个唯一编号。这是一个非确定性函数。
+  - `rank()`：将数据行值按照排序后的顺序进行排名，在有并列的情况下排名值将被跳过。
+  - `dense_rank()`：将数据行值按照排序后的顺序进行排名，在有并列的情况下也不跳过排名值。
+  - `percent_rank()`：将计算得到的排名值标准化，值为 (rank-1) / (rows-1)。
+  - `cume_dist()`：将计算得到的排名值标准化，值为小于等于当前值的行数累积分布。
+  - `ntile(N)`：将分区（partition）分为N组，向每行分配组号。
+- 选择相关
+  - `first_value(val)`：返回该窗口第一行的val值（val可以是一个表达式，下同）。
+  - `last_value(val)`：返回该窗口最后一行的val值。
+  - `nth_value(val, N)`：返回该窗口第N行的val值
+  - `lag(val, N, default)`：返回该窗口当前行**之前**第N行的val值，如果没有则返回default值，N和default的缺省值分别为1和NULL。
+  - `lead(val, N, default)`：返回该窗口当前行**之后**第N行的val值。
+
+排名相关窗口函数受partition by控制，选择相关窗口函数和聚合函数受窗口控制（rows between优先）。
 
 
 
