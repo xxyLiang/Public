@@ -303,7 +303,7 @@ SELECT
     END
     ```
 
-- `LIMIT [m,] n` ：表示从m+1行开始检索n条记录
+- `LIMIT [m,] n / LIMIT n OFFSET m` ：跳过前m行取n条记录
 
 
 
@@ -325,10 +325,12 @@ LEFT(str, len) / RIGHT(str, len)				-- 从左边/右边取子字符串，即str[
 MID(str,pos,len) / SUBSTR(str,pos[,len])		-- 从中间取子字符串，返回str[pos:pos+len]
 INSTR(str, substr)				-- 子字符串第一次出现位置(find)
 LOCATE（substr,str[,pos])		-- 子字符串第一次出现的位置，如带pos，从起始位置pos开始算起，即从str[pos:]中搜索
+SUBSTRING_INDEX(str, delim, count)	-- 相当于Python中的str.split(delim)[:count]
 
 #1.3 字符串替换
 INSERT(str, pos, len, newstr)	-- 返回将str的pos~pos+len字符替换为newstr的字符串，pos从1开始计算
 REPLACE(str,from_str,to_str)	-- 将字符串替换，如将所有'abc'替换为'cba'
+TRANSLATE(str, from_str, to_str)-- 将from_str中的字符分别替换为to_str对应的字符，如from_str='abc', to_str='xyz'，则a替换为x，b替换为y，c替换为z，因此length(from_str)必须等于length(to_str)。该函数不能在MySQL中使用。
 LPAD(str,len,padstr) / RPAD(str,len,padstr)			-- 填充，其左边/右边由字符串padstr填补到len字符长度
 TRIM([{BOTH|LEADING|TRAILING} [remstr] FROM] str)	-- 去掉左右/仅左/仅右侧的remstr字符串，默认为BOTH和空格
 LTRIM(str) / RTRIM(str)			-- 去掉左侧/右侧空格
@@ -339,6 +341,7 @@ REVERSE(str)					-- 字符串顺序取反
 #1.4 字符串拼接与生成
 REPEAT(str, count)				-- 将字符串重复若干次
 CONCAT(str1, str2, ...)			-- 字符串拼接
+GROUP_CONCAT([distinct] val [order by] [separator '分隔符'])	-- 将同一组的字符串拼接起来，需要在group by的查询中使用
 SPACE(N)						-- 返回若干个空格
 
 #1.5 其他
@@ -374,7 +377,7 @@ COALESCE(NULL, NULL)  -- NULL
 COALESCE(1,2,3)  -- TRUE
 
 #5 类型转换
-CAST(expr AS type)	-- 转字符type为'CHAR'，整数为'SIGNED'或'UNSIGNED'
+CAST(expr AS type)	-- 转字符type为'CHAR'，整数为'SIGNED'或'UNSIGNED'，小数为'DECIMAL'
 
 #6 分段函数
 INTERVAL(N, N1, N2, N3, ...)
