@@ -354,7 +354,7 @@ STRCMP(expr1, expr2)				-- 比较字符串大小，expr1 <=> expr2 分别返回-
 ABS(X)							-- 取绝对值
 CEILING(X)						-- 向上取整，即返回不小于X的最小整数
 FLOOR(X)						-- 向下取整，即返回不大于X的最大整数
-ROUND(X)						-- 四舍五入取整
+ROUND(X, decimals)				-- 四舍五入至指定小数位
 MOD(N, M)						-- 取余数，相当于N % M
 SQRT(X)							-- 开方
 EXP(X)
